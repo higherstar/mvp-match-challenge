@@ -6,7 +6,7 @@ import { ApiProperty, PickType } from '@nestjs/swagger';
 import { User } from './users.entity';
 
 // Constants
-import { Role } from './users.constants';
+import { Roles } from '../../shared/constants/global.constants';
 
 /**
  * Export create users dto
@@ -26,7 +26,7 @@ export class CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
-  @ApiProperty({ type: 'enum', enum: Role })
+  @ApiProperty({ type: 'enum', enum: Roles })
   role;
 
   @IsNumber()

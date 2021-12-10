@@ -9,7 +9,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 // Constants
-import { Role } from './users.constants';
+import { Roles } from '../../shared/constants/global.constants';
 
 /**
  * Export user
@@ -31,8 +31,8 @@ export class User {
   password: string;
 
   @ApiProperty()
-  @Column({ type: 'enum', enum: Role })
-  role: Role;
+  @Column({ type: 'enum', enum: Roles })
+  role: Roles;
 
   @ApiProperty()
   @Column({ nullable: false })
