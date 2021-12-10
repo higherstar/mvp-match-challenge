@@ -14,7 +14,7 @@ import {
   HttpExceptionFilter,
   QueryFailedExceptionFilter,
   ValidationException,
-  ValidationFilter
+  ValidationFilter,
 } from './exceptions';
 
 // Services
