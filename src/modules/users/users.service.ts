@@ -1,13 +1,13 @@
 // Dependencies
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository, DeleteResult } from 'typeorm';
+import { Repository, DeleteResult, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // User entity
 import { User } from './users.entity';
 
 // User dto
-import { CreateUserDto } from './users.dto';
+import { CreateUserDto, UpdateUserDto } from './users.dto';
 
 // Constants
 import { USER_NOT_FOUND } from '../../shared/constants/strings.constants';
@@ -55,6 +55,21 @@ export class UsersService {
    * */
   async create(createUserDto: CreateUserDto): Promise<User> {
     return await this.usersRepository.save(createUserDto);
+  }
+
+  /**
+   * @member updateUser
+   *
+   * @param {number} userId
+   * @param {UpdateUserDto} updateUserDto
+   *
+   * @returns {Promise<UpdateResult>}
+   * */
+  async updateUser(userId: number, updateUserDto: UpdateUserDto): Promise<UpdateResult> {
+    // will throw a Not Found Exception if user does not exists
+    await this.findUserById(userId);
+
+    return this.usersRepository.update(userId, updateUserDto);
   }
 
   /**
