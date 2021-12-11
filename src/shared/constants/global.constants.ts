@@ -1,6 +1,11 @@
 // Export global constants
 export const API_PREFIX = '/api/v1';
 
+// Config
+require('dotenv').config();
+
+export const JWT_SECRET = process.env.JWT_SIGNATURE;
+
 export enum Roles {
   SELLER = 'seller',
   BUYER = 'buyer',

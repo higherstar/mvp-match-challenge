@@ -40,8 +40,4 @@ export class CreateUserDto {
  *
  * @class UserResponseDto
  * */
-export class UserResponseDto extends PickType(User, [
-  'email',
-  'role',
-  'deposit'
-]) {}
+export class UserResponseDto extends PickType(User, ['email', 'role', 'deposit']) {}

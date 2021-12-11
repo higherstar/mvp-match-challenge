@@ -4,7 +4,6 @@ import { IsOptional } from 'class-validator';
 // Constants
 import { OrderDirection, DEFAULT_SORT_BY } from '../constants/global.constants';
 
-
 /**
  * Export sort order dto
  *

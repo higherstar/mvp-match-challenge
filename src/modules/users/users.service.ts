@@ -1,6 +1,6 @@
 // Dependencies
-import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { Repository, DeleteResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // User entity
@@ -8,6 +8,9 @@ import { User } from './users.entity';
 
 // User dto
 import { CreateUserDto } from './users.dto';
+
+// Constants
+import { USER_NOT_FOUND } from '../../shared/constants/strings.constants';
 
 /**
  * Export users service
@@ -27,6 +30,23 @@ export class UsersService {
   ) {}
 
   /**
+   * @member findUserById
+   *
+   * @param {number} id
+   *
+   * @returns {Promise<User>}
+   * */
+  async findUserById(id: number): Promise<User> {
+    const user = await this.usersRepository.findOne(id);
+
+    if (!user) {
+      throw new NotFoundException(USER_NOT_FOUND);
+    }
+
+    return user;
+  }
+
+  /**
    * @member create
    *
    * @param {CreateUserDto} createUserDto
@@ -34,11 +54,20 @@ export class UsersService {
    * @returns {Promise<User>}
    * */
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return await this.usersRepository.save({
-      email: createUserDto.email,
-      password: createUserDto.password,
-      deposit: createUserDto.deposit,
-      role: createUserDto.role,
-    });
+    return await this.usersRepository.save(createUserDto);
+  }
+
+  /**
+   * @member deleteUser
+   *
+   * @param {number} userId
+   *
+   * @returns {Promise<DeleteResult>}
+   * */
+  async deleteUser(userId: number): Promise<DeleteResult> {
+    // will throw a Not Found Exception if user does not exists
+    await this.findUserById(userId);
+
+    return this.usersRepository.delete(userId);
   }
 }
