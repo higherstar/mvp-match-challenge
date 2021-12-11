@@ -8,8 +8,9 @@ import config from './database/config/local';
 
 // Modules
 import { LoggerModule } from './modules/logger/logger.module';
-import { UsersModule } from './modules/users/users.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { UserModule } from './modules/user/user.module';
+import { ProductModule } from './modules/product/product.module';
 
 // Validators
 import { EntityExistValidator } from './shared/validators/entity-exist.validator';
@@ -30,7 +31,8 @@ import { SwaggerService } from './swagger/swagger.service';
     TypeOrmModule.forRoot(config as TypeOrmModuleOptions),
     LoggerModule,
     AuthModule,
-    UsersModule,
+    UserModule,
+    ProductModule,
   ],
   controllers: [],
   providers: [EntityExistValidator, SwaggerService],

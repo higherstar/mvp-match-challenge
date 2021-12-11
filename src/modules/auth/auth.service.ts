@@ -7,7 +7,7 @@ import { ILike, Repository } from 'typeorm';
 
 import { AuthResponseDto, LoginUserDTO } from './auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '../users/users.entity';
+import { User } from '../user/user.entity';
 
 /**
  * Export auth service
@@ -49,17 +49,17 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    return this.generateSchoolUserJwtToken(user);
+    return this.generateUserJwtToken(user);
   }
 
   /**
-   * @member generateSchoolUserJwtToken
+   * @member generateUserJwtToken
    *
    * @param {User} user
    *
    * @returns {Promise<AuthResponseDto>}
    * */
-  async generateSchoolUserJwtToken(user: User): Promise<AuthResponseDto> {
+  async generateUserJwtToken(user: User): Promise<AuthResponseDto> {
     const data = { ...classToPlain(user) };
 
     const payload = {
@@ -72,6 +72,7 @@ export class AuthService {
 
     return {
       accessToken: this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET,
         expiresIn: 3600, //1h
       }),
       ...payload,

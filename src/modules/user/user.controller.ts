@@ -15,15 +15,15 @@ import {
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 // Users service
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/auth.jwt.guard';
 
 // DTOs
 import { BasicSuccessResponseDto, SuccessResponseDto } from '../../shared/DTOs/success-response.dto';
-import { CreateUserDto, UpdateUserDto, UserResponseDto } from './users.dto';
+import { CreateUserDto, UpdateUserDto, UserResponseDto } from './user.dto';
 
 // Entities
-import { User } from './users.entity';
+import { User } from './user.entity';
 
 // Interfaces
 import { JwtRequest } from '../auth/auth.types';
@@ -32,19 +32,19 @@ import { JwtRequest } from '../auth/auth.types';
 import { NOTHING_TO_UPDATE, SUCCESS, USER_SELF_DELETE } from '../../shared/constants/strings.constants';
 
 /**
- * Export users controller
+ * Export user controller
  *
- * @class UsersController
+ * @class UserController
  * */
 @ApiTags('users')
 @Controller('users')
-export class UsersController {
+export class UserController {
   /**
    * @constructor
    *
-   * @param {UsersService} usersService
+   * @param {UserService} userService
    * */
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly userService: UserService) {}
 
   /**
    * @member create
@@ -61,7 +61,7 @@ export class UsersController {
     description: 'Bad Request - Some of the fields are missing or invalid, or email is already used',
   })
   create(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.usersService.create(createUserDto);
+    return this.userService.create(createUserDto);
   }
 
   /**
@@ -72,13 +72,14 @@ export class UsersController {
    * @returns {Promise<SuccessResponseDto<User>>}
    * */
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: 'Get a user details' })
   @ApiResponse({ status: 200, description: 'Success', type: UserResponseDto })
   @ApiResponse({ status: 400, description: 'Bad Request - The provided user id is missing or invalid' })
   @ApiResponse({ status: 403, description: 'Forbidden - You do not have rights to access the resource' })
   @ApiResponse({ status: 404, description: 'Not Found - Can not find a user by provided id' })
   async find(@Param('id', ParseIntPipe) userId: number): Promise<SuccessResponseDto<User>> {
-    const user = await this.usersService.findUserById(userId);
+    const user = await this.userService.findUserById(userId);
 
     return {
       message: SUCCESS,
@@ -90,11 +91,12 @@ export class UsersController {
    * @member update
    *
    * @param {number} userId
-   * @param updateUserDto
+   * @param {UpdateUserDto} updateUserDto
    *
    * @returns {Promise<BasicSuccessResponseDto>}
    * */
   @Put(':id')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ description: 'Update user name, role or deposit' })
   @ApiResponse({ status: 200, description: 'Success', type: BasicSuccessResponseDto })
   @ApiResponse({ status: 400, description: 'Bad Request - The provided user id is missing or invalid' })
@@ -108,7 +110,7 @@ export class UsersController {
       return { message: NOTHING_TO_UPDATE };
     }
 
-    await this.usersService.updateUser(userId, updateUserDto);
+    await this.userService.updateUser(userId, updateUserDto);
 
     return { message: SUCCESS };
   }
@@ -135,7 +137,7 @@ export class UsersController {
       throw new BadRequestException(USER_SELF_DELETE);
     }
 
-    await this.usersService.deleteUser(userId);
+    await this.userService.deleteUser(userId);
 
     return { message: SUCCESS };
   }

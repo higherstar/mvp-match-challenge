@@ -3,14 +3,14 @@ import { IsEmail, IsNumber, IsNotEmpty, IsString, IsOptional, IsEnum } from 'cla
 import { ApiProperty, PickType } from '@nestjs/swagger';
 
 // Entities
-import { User } from './users.entity';
+import { User } from './user.entity';
 
 // Constants
 import { Roles } from '../../shared/constants/global.constants';
 import { INVALID_ROLE } from '../../shared/constants/strings.constants';
 
 /**
- * Export create users dto
+ * Export create user dto
  *
  * @class CreateUserDto
  * */
@@ -49,10 +49,12 @@ export class UpdateUserDto {
 
   @IsOptional()
   @IsEnum(Roles, { message: INVALID_ROLE })
+  @ApiProperty({ type: 'enum', enum: Roles })
   readonly role: Roles;
 
   @IsOptional()
   @IsNumber()
+  @ApiProperty({ type: 'number' })
   readonly deposit: number;
 }
 

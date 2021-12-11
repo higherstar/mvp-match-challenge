@@ -1,6 +1,9 @@
 // Dependencies
 import { Request } from '@nestjs/common';
 
+// Entities
+import { User } from '../user/user.entity';
+
 // Constants
 import { Roles } from '../../shared/constants/global.constants';
 
@@ -22,5 +25,14 @@ export interface JwtUser {
  * @extends Request
  * */
 export interface JwtRequest extends Request {
+  user: User;
+}
+
+/**
+ * Export jwt payload interface
+ *
+ * @interface JwtPayload
+ * */
+export interface JwtPayload {
   user: JwtUser;
 }

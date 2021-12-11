@@ -1,5 +1,7 @@
 // Dependencies
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+
+// Interfaces
 import { JwtUser } from './auth.types';
 
 /**

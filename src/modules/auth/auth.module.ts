@@ -13,11 +13,11 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './auth.jwt.strategy';
 
 // Entities
-import { User } from '../users/users.entity';
+import { User } from '../user/user.entity';
 
 // Constants
 import { JWT_SECRET } from '../../shared/constants/global.constants';
-import { UsersModule } from '../users/users.module';
+import { UserModule } from '../user/user.module';
 
 /**
  * Export auth module
@@ -30,7 +30,7 @@ import { UsersModule } from '../users/users.module';
     JwtModule.register({
       secret: JWT_SECRET,
     }),
-    UsersModule,
+    UserModule,
   ],
   exports: [AuthService],
   providers: [AuthService, JwtStrategy],

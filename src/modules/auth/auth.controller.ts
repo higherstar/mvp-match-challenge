@@ -35,7 +35,7 @@ export class AuthController {
    * @returns {Promise<SuccessResponseDto<AuthResponseDto>>}
    * */
   @Post('login')
-  @ApiOperation({ description: 'The route used by users to get a new JWT token' })
+  @ApiOperation({ description: 'The route used by user to get a new JWT token' })
   @ApiResponse({ status: 200, type: AuthResponseDto })
   @ApiResponse({ status: 401 })
   async login(@Body() loginData: LoginUserDTO): Promise<SuccessResponseDto<AuthResponseDto>> {

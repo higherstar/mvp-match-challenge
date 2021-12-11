@@ -4,29 +4,29 @@ import { Repository, DeleteResult, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // User entity
-import { User } from './users.entity';
+import { User } from './user.entity';
 
 // User dto
-import { CreateUserDto, UpdateUserDto } from './users.dto';
+import { CreateUserDto, UpdateUserDto } from './user.dto';
 
 // Constants
 import { USER_NOT_FOUND } from '../../shared/constants/strings.constants';
 
 /**
- * Export users service
+ * Export user service
  *
- * @class UsersService
+ * @class UserService
  * */
 @Injectable()
-export class UsersService {
+export class UserService {
   /**
    * @constructor
    *
-   * @param {Repository<User>} usersRepository
+   * @param {Repository<User>} userRepository
    * */
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private userRepository: Repository<User>,
   ) {}
 
   /**
@@ -37,7 +37,9 @@ export class UsersService {
    * @returns {Promise<User>}
    * */
   async findUserById(id: number): Promise<User> {
-    const user = await this.usersRepository.findOne(id);
+    const user = await this.userRepository.findOne(id, {
+      relations: ['products']
+    });
 
     if (!user) {
       throw new NotFoundException(USER_NOT_FOUND);
@@ -54,7 +56,7 @@ export class UsersService {
    * @returns {Promise<User>}
    * */
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return await this.usersRepository.save(createUserDto);
+    return await this.userRepository.save(createUserDto);
   }
 
   /**
@@ -69,7 +71,7 @@ export class UsersService {
     // will throw a Not Found Exception if user does not exists
     await this.findUserById(userId);
 
-    return this.usersRepository.update(userId, updateUserDto);
+    return this.userRepository.update(userId, updateUserDto);
   }
 
   /**
@@ -83,6 +85,6 @@ export class UsersService {
     // will throw a Not Found Exception if user does not exists
     await this.findUserById(userId);
 
-    return this.usersRepository.delete(userId);
+    return this.userRepository.delete(userId);
   }
 }

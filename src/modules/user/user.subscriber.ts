@@ -3,16 +3,16 @@ import crypto from 'crypto';
 import { Connection, EntitySubscriberInterface, EventSubscriber, InsertEvent, UpdateEvent } from 'typeorm';
 
 // User entity
-import { User } from './users.entity';
+import { User } from './user.entity';
 
 /**
- * Export users subscriber
+ * Export user subscriber
  *
- * @class UsersSubscriber
+ * @class UserSubscriber
  * @implements EntitySubscriberInterface<User>
  * */
 @EventSubscriber()
-export class UsersSubscriber implements EntitySubscriberInterface<User> {
+export class UserSubscriber implements EntitySubscriberInterface<User> {
   /**
    * @constructor
    *

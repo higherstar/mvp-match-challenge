@@ -1,14 +1,5 @@
 // Dependencies
-import crypto from 'crypto';
-import {
-  Entity,
-  Column,
-  BeforeInsert,
-  BeforeUpdate,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
 // Constants
@@ -32,14 +23,6 @@ export class User {
   @ApiProperty()
   @Column({ nullable: false })
   password: string;
-
-  @BeforeInsert()
-  @BeforeUpdate()
-  hashPassword(): void {
-    if (this.password) {
-      this.password = crypto.createHmac('sha256', this.password).digest('hex');
-    }
-  }
 
   @ApiProperty()
   @Column({ type: 'enum', enum: Roles })
