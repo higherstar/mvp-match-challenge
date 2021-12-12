@@ -39,9 +39,7 @@ export class ProductService {
    * @returns {Promise<Product>}
    * */
   async findProductById(id: number): Promise<Product> {
-    const product = await this.productRepository.findOne(id, {
-      relations: ['seller'],
-    });
+    const product = await this.productRepository.findOne(id);
 
     if (!product) {
       throw new NotFoundException(PRODUCT_NOT_FOUND);
@@ -73,6 +71,25 @@ export class ProductService {
    * */
   async create(createProductDto: CreateProductDto): Promise<Product> {
     return await this.productRepository.save(createProductDto);
+  }
+
+  /**
+   * @member read
+   *
+   * @param {number} productId
+   *
+   * @returns {Promise<Product>}
+   * */
+  async read(productId: number): Promise<Product> {
+    const product = await this.productRepository.findOne(productId, {
+      relations: ['seller'],
+    });
+
+    if (!product) {
+      throw new NotFoundException(PRODUCT_NOT_FOUND);
+    }
+
+    return product;
   }
 
   /**

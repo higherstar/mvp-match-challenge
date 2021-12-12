@@ -1,5 +1,5 @@
 // Dependencies
-import { IsEmail, IsNumber, IsNotEmpty, IsString, IsOptional, IsEnum } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsOptional, IsEnum } from 'class-validator';
 import { ApiProperty, PickType } from '@nestjs/swagger';
 
 // Entities
@@ -25,15 +25,10 @@ export class CreateUserDto {
   @ApiProperty({ type: 'string' })
   password;
 
-  @IsString()
+  @IsEnum(Roles, { message: INVALID_ROLE })
   @IsNotEmpty()
   @ApiProperty({ type: 'enum', enum: Roles })
   role;
-
-  @IsNumber()
-  @IsNotEmpty()
-  @ApiProperty({ type: 'number' })
-  deposit;
 }
 
 export class UpdateUserDto {
@@ -51,11 +46,6 @@ export class UpdateUserDto {
   @IsEnum(Roles, { message: INVALID_ROLE })
   @ApiProperty({ type: 'enum', enum: Roles })
   readonly role: Roles;
-
-  @IsOptional()
-  @IsNumber()
-  @ApiProperty({ type: 'number' })
-  readonly deposit: number;
 }
 
 /**

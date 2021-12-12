@@ -11,6 +11,7 @@ import { LoggerModule } from './modules/logger/logger.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { ProductModule } from './modules/product/product.module';
+import { BusinessModule } from './modules/business/business.module';
 
 // Validators
 import { EntityExistValidator } from './shared/validators/entity-exist.validator';
@@ -33,6 +34,7 @@ import { SwaggerService } from './swagger/swagger.service';
     AuthModule,
     UserModule,
     ProductModule,
+    BusinessModule,
   ],
   controllers: [],
   providers: [EntityExistValidator, SwaggerService],

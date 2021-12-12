@@ -29,7 +29,7 @@ export class User {
   role: Roles;
 
   @ApiProperty()
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   deposit: number;
 
   @ApiProperty()

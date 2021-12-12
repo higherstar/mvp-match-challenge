@@ -83,7 +83,7 @@ export class ProductController {
   }
 
   /**
-   * @member find
+   * @member read
    *
    * @param {number} productId
    *
@@ -95,8 +95,8 @@ export class ProductController {
   @ApiResponse({ status: 400, description: 'Bad Request - The provided user id is missing or invalid' })
   @ApiResponse({ status: 403, description: 'Forbidden - You do not have rights to access the resource' })
   @ApiResponse({ status: 404, description: 'Not Found - Can not find a user by provided id' })
-  async find(@Param('id', ParseIntPipe) productId: number): Promise<SuccessResponseDto<Product>> {
-    const product = await this.productService.findProductById(productId);
+  async read(@Param('id', ParseIntPipe) productId: number): Promise<SuccessResponseDto<Product>> {
+    const product = await this.productService.read(productId);
 
     return {
       message: SUCCESS,

@@ -11,6 +11,14 @@ export enum Roles {
   BUYER = 'buyer',
 }
 
+export enum DepositAmount {
+  FIVE = 5,
+  TEN = 10,
+  TWENTY = 20,
+  FIFTY = 50,
+  HUNDRED = 100,
+}
+
 export enum OrderDirection {
   ASC = 'ASC',
   DESC = 'DESC',

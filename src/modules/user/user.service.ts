@@ -38,7 +38,7 @@ export class UserService {
    * */
   async findUserById(id: number): Promise<User> {
     const user = await this.userRepository.findOne(id, {
-      relations: ['products']
+      relations: ['products'],
     });
 
     if (!user) {
