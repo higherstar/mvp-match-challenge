@@ -31,6 +31,11 @@ export class CreateUserDto {
   role;
 }
 
+/**
+ * Export update user dto
+ *
+ * @class UpdateUserDto
+ * */
 export class UpdateUserDto {
   @IsOptional()
   @IsEmail()

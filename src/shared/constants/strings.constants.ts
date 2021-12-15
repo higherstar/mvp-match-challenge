@@ -4,6 +4,7 @@ export const USER_SELF_DELETE = 'You cannot delete yourself!';
 export const USER_NOT_FOUND = 'User was not found!';
 export const NOTHING_TO_UPDATE = 'Nothing to update!';
 export const INVALID_ROLE = 'Invalid role! Try input "seller" or "buyer".';
+export const INVALID_EMAIL = 'Invalid email!';
 export const USER_NOT_CREATE_PRODUCT = 'You do not have right to create product!';
 export const USER_NOT_UPDATE_PRODUCT = 'You do not have right to update product!';
 export const USER_NOT_DELETE_PRODUCT = 'You do not have right to delete product!';

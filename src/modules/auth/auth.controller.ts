@@ -4,7 +4,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 // DTOs
 import { SuccessResponseDto } from '../../shared/DTOs/success-response.dto';
-import { AuthResponseDto, LoginUserDTO } from './auth.dto';
+import { AuthResponseDto, LoginDataDto, MeDataDto, RegisterDataDto } from './auth.dto';
 
 // Constants
 import { SUCCESS } from '../../shared/constants/strings.constants';
@@ -30,20 +30,56 @@ export class AuthController {
   /**
    * @member login
    *
-   * @param {LoginUserDTO} loginData
+   * @param {LoginDataDto} loginData
    *
    * @returns {Promise<SuccessResponseDto<AuthResponseDto>>}
    * */
   @Post('login')
-  @ApiOperation({ description: 'The route used by user to get a new JWT token' })
+  @ApiOperation({ description: 'The route used by user to login' })
   @ApiResponse({ status: 200, type: AuthResponseDto })
   @ApiResponse({ status: 401 })
-  async login(@Body() loginData: LoginUserDTO): Promise<SuccessResponseDto<AuthResponseDto>> {
+  async login(@Body() loginData: LoginDataDto): Promise<SuccessResponseDto<AuthResponseDto>> {
     const resp = await this.authService.login(loginData);
 
     return {
       message: SUCCESS,
       data: resp,
     };
+  }
+
+  /**
+   * @member register
+   *
+   * @param {RegisterDataDto} registerData
+   *
+   * @return {Promise<SuccessResponseDto<AuthResponseDto>>}
+   * */
+  @Post('register')
+  @ApiOperation({ description: 'The route used by user to register user' })
+  @ApiResponse({ status: 200, type: AuthResponseDto })
+  @ApiResponse({ status: 401 })
+  async register(@Body() registerData: RegisterDataDto): Promise<SuccessResponseDto<AuthResponseDto>> {
+    const resp = await this.authService.register(registerData);
+
+    return {
+      message: SUCCESS,
+      data: resp
+    };
+  }
+
+  /**
+   * @member me
+   * */
+  @Post('me')
+  @ApiOperation({ description: 'The route used by user to get me' })
+  @ApiResponse({ status: 200, type: AuthResponseDto })
+  @ApiResponse({ status: 401 })
+  async me(@Body() meData: MeDataDto) {
+    const resp = await this.authService.me(meData);
+
+    return {
+      message: SUCCESS,
+      data: resp
+    }
   }
 }

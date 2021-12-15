@@ -5,7 +5,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { classToPlain } from 'class-transformer';
 import { ILike, Repository } from 'typeorm';
 
-import { AuthResponseDto, LoginUserDTO } from './auth.dto';
+import { AuthResponseDto, LoginDataDto, MeDataDto, RegisterDataDto } from './auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 
@@ -31,11 +31,11 @@ export class AuthService {
   /**
    * @member login
    *
-   * @param {LoginUserDTO} loginData
+   * @param {LoginDataDto} loginData
    *
    * @returns {Promise<AuthResponseDto>}
    * */
-  public async login(loginData: LoginUserDTO): Promise<AuthResponseDto> {
+  async login(loginData: LoginDataDto): Promise<AuthResponseDto> {
     const passwordHash = crypto.createHmac('sha256', loginData.password).digest('hex');
 
     const user = await this.usersRepository.findOne({
@@ -48,6 +48,32 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException();
     }
+
+    return this.generateUserJwtToken(user);
+  }
+
+  /**
+   * @member register
+   *
+   * @param {RegisterDataDto} registerData
+   *
+   * @returns {Promise<AuthResponseDto>}
+   * */
+  async register(registerData: RegisterDataDto): Promise<AuthResponseDto> {
+    const user = await this.usersRepository.save(registerData);
+
+    return this.generateUserJwtToken(user);
+  }
+
+  /**
+   * @member me
+   *
+   * @param {MeDataDto} meData
+   *
+   * @returns
+   * */
+  async me(meData: MeDataDto): Promise<AuthResponseDto> {
+    const { user } = await this.jwtService.decode(meData.token) as { user: User };
 
     return this.generateUserJwtToken(user);
   }
