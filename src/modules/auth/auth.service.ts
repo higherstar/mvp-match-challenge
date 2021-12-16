@@ -3,9 +3,9 @@ import crypto from 'crypto';
 import { JwtService } from '@nestjs/jwt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { classToPlain } from 'class-transformer';
-import { ILike, Repository } from 'typeorm';
+import { ILike, Repository, UpdateResult } from 'typeorm';
 
-import { AuthResponseDto, LoginDataDto, MeDataDto, RegisterDataDto } from './auth.dto';
+import { AuthResponseDto, LoginDataDto, RegisterDataDto, UpdateProfileDto } from './auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../user/user.entity';
 
@@ -66,16 +66,16 @@ export class AuthService {
   }
 
   /**
-   * @member me
+   * @member updateProfile
    *
-   * @param {MeDataDto} meData
+   * @param {number} id
+   * @param {UpdateProfileDto} updateProfileDto
    *
-   * @returns
+   * @returns {Promise<UpdateResult>}
+   *
    * */
-  async me(meData: MeDataDto): Promise<AuthResponseDto> {
-    const { user } = await this.jwtService.decode(meData.token) as { user: User };
-
-    return this.generateUserJwtToken(user);
+  async updateProfile(id: number, updateProfileDto: UpdateProfileDto): Promise<UpdateResult> {
+    return await this.usersRepository.update(id, updateProfileDto);
   }
 
   /**

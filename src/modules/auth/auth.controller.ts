@@ -1,16 +1,18 @@
 // Dependencies
-import { Body, Controller, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Post, Get, Req, UseGuards } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiBody, ApiTags } from '@nestjs/swagger';
 
 // DTOs
-import { SuccessResponseDto } from '../../shared/DTOs/success-response.dto';
-import { AuthResponseDto, LoginDataDto, MeDataDto, RegisterDataDto } from './auth.dto';
+import { BasicSuccessResponseDto, SuccessResponseDto } from '../../shared/DTOs/success-response.dto';
+import { AuthResponseDto, LoginDataDto, RegisterDataDto, UpdateProfileDto } from './auth.dto';
 
 // Constants
 import { SUCCESS } from '../../shared/constants/strings.constants';
 
 // Services
 import { AuthService } from './auth.service';
+import { JwtRequest } from './auth.types';
+import { JwtAuthGuard } from './auth.jwt.guard';
 
 /**
  * Export auth controller
@@ -56,7 +58,7 @@ export class AuthController {
    * */
   @Post('register')
   @ApiOperation({ description: 'The route used by user to register user' })
-  @ApiResponse({ status: 200, type: AuthResponseDto })
+  @ApiResponse({ status: 200 })
   @ApiResponse({ status: 401 })
   async register(@Body() registerData: RegisterDataDto): Promise<SuccessResponseDto<AuthResponseDto>> {
     const resp = await this.authService.register(registerData);
@@ -69,17 +71,43 @@ export class AuthController {
 
   /**
    * @member me
+   *
+   * @param {JwtRequest} req
+   *
+   * @returns {Promise<SuccessResponseDto<AuthResponseDto>>}
    * */
-  @Post('me')
-  @ApiOperation({ description: 'The route used by user to get me' })
-  @ApiResponse({ status: 200, type: AuthResponseDto })
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: 'The route used by user to get me from token' })
+  @ApiResponse({ status: 200 })
   @ApiResponse({ status: 401 })
-  async me(@Body() meData: MeDataDto) {
-    const resp = await this.authService.me(meData);
+  async me(@Req() req: JwtRequest): Promise<SuccessResponseDto<AuthResponseDto>> {
+    const resp = await this.authService.generateUserJwtToken(req.user);
 
     return {
       message: SUCCESS,
       data: resp
     }
+  }
+
+  /**
+   * @member updateProfile
+   *
+   * @param {UpdateProfileDto} updateProfileDto
+   * @param {JwtRequest} req
+   *
+   * @returns {Promise<BasicSuccessResponseDto>}
+   * */
+  @Post('update-profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: 'Update profile' })
+  @ApiBody({ type: UpdateProfileDto })
+  @ApiResponse({ status: 201, description: 'Success', type: BasicSuccessResponseDto })
+  async updateProfile(@Body() updateProfileDto: UpdateProfileDto, @Req() req: JwtRequest): Promise<BasicSuccessResponseDto> {
+    await this.authService.updateProfile(req.user.id, updateProfileDto);
+
+    return {
+      message: SUCCESS,
+    };
   }
 }

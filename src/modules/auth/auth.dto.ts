@@ -17,7 +17,7 @@ import { INVALID_EMAIL, INVALID_ROLE } from '../../shared/constants/strings.cons
 export class LoginDataDto {
   @IsEmail({}, { message: INVALID_EMAIL })
   @IsNotEmpty()
-  @ApiProperty({ type: 'email' })
+  @ApiProperty({ type: 'string' })
   email: string;
 
   @IsString()
@@ -34,7 +34,7 @@ export class LoginDataDto {
 export class RegisterDataDto {
   @IsEmail({}, { message: INVALID_EMAIL })
   @IsNotEmpty()
-  @ApiProperty({ type: 'email' })
+  @ApiProperty({ type: 'string' })
   email: string;
 
   @IsString()
@@ -49,15 +49,20 @@ export class RegisterDataDto {
 }
 
 /**
- * Export me dto
+ * Export update profile dto
  *
- * @class MeDto
+ * @class UpdateProfileDto
  * */
-export class MeDataDto {
+export class UpdateProfileDto {
+  @IsEmail({}, { message: INVALID_EMAIL })
+  @IsNotEmpty()
+  @ApiProperty({ type: 'string' })
+  email: string;
+
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ type: 'string' })
-  token: string;
+  password: string;
 }
 
 /**
