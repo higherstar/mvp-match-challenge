@@ -25,11 +25,6 @@ export class CreateProductDto {
   @IsNotEmpty()
   @ApiProperty({ type: 'number' })
   amountAvailable;
-
-  @IsNumber()
-  @IsNotEmpty()
-  @ApiProperty({ type: 'number' })
-  seller;
 }
 
 /**

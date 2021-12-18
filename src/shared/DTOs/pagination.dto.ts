@@ -8,11 +8,16 @@ import { DEFAULT_PAGE_LIMIT } from '../constants/global.constants';
 // Helpers
 import { transformLimit, transformPage } from '../helpers';
 
+/**
+ * Export pagination params dto
+ *
+ * @class PaginationParamsDto
+ * */
 export class PaginationParamsDto {
   @IsOptional()
   @Transform(
     (page: TransformFnParams) => {
-      return transformPage(page);
+      return transformPage(page.value);
     },
     { toClassOnly: true },
   )
@@ -21,13 +26,19 @@ export class PaginationParamsDto {
   @IsOptional()
   @Transform(
     (limit) => {
-      return transformLimit(limit);
+      return transformLimit(limit.value);
     },
     { toClassOnly: true },
   )
   limit?: number = DEFAULT_PAGE_LIMIT;
 }
 
+/**
+ * Export pagination dto
+ *
+ * @class PaginationDto
+ * @extends PaginationParamsDto
+ * */
 export class PaginationDto extends PaginationParamsDto {
   totalPages: number;
 

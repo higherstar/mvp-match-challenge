@@ -15,7 +15,7 @@ export class DepositDto {
   @IsEnum(DepositAmount, { message: INVALID_DEPOSIT_VALUE })
   @IsNotEmpty()
   @ApiProperty({ type: 'number', enum: DepositAmount })
-  deposit;
+  value;
 }
 
 /**

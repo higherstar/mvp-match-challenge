@@ -65,7 +65,7 @@ export class AuthController {
 
     return {
       message: SUCCESS,
-      data: resp
+      data: resp,
     };
   }
 
@@ -86,8 +86,8 @@ export class AuthController {
 
     return {
       message: SUCCESS,
-      data: resp
-    }
+      data: resp,
+    };
   }
 
   /**
@@ -103,7 +103,10 @@ export class AuthController {
   @ApiOperation({ description: 'Update profile' })
   @ApiBody({ type: UpdateProfileDto })
   @ApiResponse({ status: 201, description: 'Success', type: BasicSuccessResponseDto })
-  async updateProfile(@Body() updateProfileDto: UpdateProfileDto, @Req() req: JwtRequest): Promise<BasicSuccessResponseDto> {
+  async updateProfile(
+    @Body() updateProfileDto: UpdateProfileDto,
+    @Req() req: JwtRequest,
+  ): Promise<BasicSuccessResponseDto> {
     await this.authService.updateProfile(req.user.id, updateProfileDto);
 
     return {

@@ -93,6 +93,7 @@ export class AuthService {
         id: data.id,
         role: data.role,
         email: data.email,
+        deposit: data.deposit,
       },
     };
 

@@ -2,6 +2,8 @@
 import { ValidationError } from '../../exceptions';
 
 /**
+ * Export failed response
+ *
  * @class FailedResponseDto
  * */
 export class FailedResponseDto {

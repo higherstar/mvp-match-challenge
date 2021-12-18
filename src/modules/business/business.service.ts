@@ -3,9 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
-// Services
-import { ProductService } from '../product/product.service';
-
 // Entities
 import { Product } from '../product/product.entity';
 import { User } from '../user/user.entity';
@@ -27,7 +24,6 @@ export class BusinessService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private productService: ProductService,
   ) {}
 
   /**
@@ -39,7 +35,7 @@ export class BusinessService {
    * @returns {Promise<Product>}
    * */
   async deposit(user: User, depositDto: DepositDto): Promise<number> {
-    await this.userRepository.update(user.id, { deposit: depositDto.deposit + user.deposit });
+    await this.userRepository.update(user.id, { deposit: depositDto.value + user.deposit });
 
     const updatedUser = await this.userRepository.findOne(user.id);
 

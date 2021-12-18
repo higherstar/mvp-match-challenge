@@ -1,6 +1,6 @@
 // Dependencies
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Like, Repository, UpdateResult } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // Product entity
@@ -9,6 +9,9 @@ import { User } from '../user/user.entity';
 
 // DTOs
 import { CreateProductDto, UpdateProductDto } from './product.dto';
+import { PaginationParamsDto } from '../../shared/DTOs/pagination.dto';
+import { SortOrderDto } from '../../shared/DTOs/sort-order.dto';
+import { ListDto } from '../../shared/DTOs/list-dto';
 
 // Constants
 import { PRODUCT_NOT_FOUND } from '../../shared/constants/strings.constants';
@@ -57,7 +60,7 @@ export class ProductService {
    * @param {number} productId
    * */
   async checkRight(user: User, productId: number): Promise<boolean> {
-    const product = await this.findProductById(productId);
+    const product = await this.read(productId);
 
     return user.role === Roles.SELLER && product && user.id === product.seller.id;
   }
@@ -66,11 +69,12 @@ export class ProductService {
    * @member create
    *
    * @param {CreateProductDto} createProductDto
+   * @param {User} user
    *
    * @returns {Promise<Product>}
    * */
-  async create(createProductDto: CreateProductDto): Promise<Product> {
-    return await this.productRepository.save(createProductDto);
+  async create(createProductDto: CreateProductDto, user: User): Promise<Product> {
+    return await this.productRepository.save({ ...createProductDto, seller: user });
   }
 
   /**
@@ -90,6 +94,37 @@ export class ProductService {
     }
 
     return product;
+  }
+
+  /**
+   * @member readAll
+   * */
+  async readAll(
+    paginationParams: PaginationParamsDto,
+    sortOrderDto: SortOrderDto,
+    search: string = '',
+    user: User,
+  ): Promise<ListDto<Product>> {
+    const [products, totalCount] = await this.productRepository.findAndCount({
+      where: {
+        productName: Like(`%${search}%`),
+        seller: user.id,
+      },
+      order: {
+        [sortOrderDto.sortBy]: sortOrderDto.order,
+      },
+      skip: (paginationParams.page - 1) * paginationParams.limit,
+      take: paginationParams.limit,
+    });
+
+    return {
+      listData: products,
+      pagination: {
+        totalCount,
+        totalPages: Math.ceil(totalCount / paginationParams.limit),
+      },
+      sortOrder: sortOrderDto,
+    };
   }
 
   /**

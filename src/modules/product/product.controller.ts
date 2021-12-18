@@ -8,11 +8,13 @@ import {
   UseGuards,
   Get,
   Param,
+  Query,
   ParseIntPipe,
   Delete,
   Put,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiImplicitQuery } from '@nestjs/swagger/dist/decorators/api-implicit-query.decorator';
 
 // Services
 import { ProductService } from './product.service';
@@ -20,6 +22,9 @@ import { ProductService } from './product.service';
 // DTOs
 import { CreateProductDto, UpdateProductDto, ProductResponseDto } from './product.dto';
 import { BasicSuccessResponseDto, SuccessResponseDto } from '../../shared/DTOs/success-response.dto';
+import { PaginationParamsDto } from '../../shared/DTOs/pagination.dto';
+import { SortOrderDto } from '../../shared/DTOs/sort-order.dto';
+import { ListDto } from '../../shared/DTOs/list-dto';
 
 // Entities
 import { Product } from './product.entity';
@@ -59,8 +64,8 @@ export class ProductController {
    * @member create
    *
    * @param {CreateProductDto} createProductDto
-   *
    * @param {JwtRequest} req
+   *
    * @returns {Promise<Product>}
    * */
   @Post()
@@ -72,14 +77,18 @@ export class ProductController {
     description: 'Bad Request - Some of the fields are missing or invalid, or email is already used',
   })
   @ApiResponse({ status: 403, description: 'Forbidden - You do not have rights to access the resource' })
-  create(@Body() createProductDto: CreateProductDto, @Req() req: JwtRequest): Promise<Product> {
+  async create(@Body() createProductDto: CreateProductDto, @Req() req: JwtRequest): Promise<BasicSuccessResponseDto> {
     const isSeller = req.user.role === Roles.SELLER;
 
     if (!isSeller) {
       throw new BadRequestException(USER_NOT_CREATE_PRODUCT);
     }
 
-    return this.productService.create(createProductDto);
+    await this.productService.create(createProductDto, req.user);
+
+    return {
+      message: SUCCESS,
+    }
   }
 
   /**
@@ -105,12 +114,43 @@ export class ProductController {
   }
 
   /**
+   * @member readAll
+   *
+   * @param {PaginationParamsDto} paginationParams
+   * @param {SortOrderDto} sortOrderParams
+   * @param {string} search
+   * @param {JwtRequest} req
+   *
+   * @returns {Promise<SuccessResponseDto<ListDto<Product>>>}
+   * */
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ description: 'Get a list of schools' })
+  @ApiImplicitQuery({ name: 'search', required: false, type: 'String' })
+  @ApiImplicitQuery({ name: 'filter', required: false })
+  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiResponse({ status: 403, description: 'Forbidden - You do not have rights to access the resource' })
+  async readAll(
+    @Query() paginationParams: PaginationParamsDto,
+    @Query() sortOrderParams: SortOrderDto,
+    @Query('search') search: string,
+    @Req() req: JwtRequest,
+  ): Promise<SuccessResponseDto<ListDto<Product>>> {
+    const listData = await this.productService.readAll(paginationParams, sortOrderParams, search, req.user);
+
+    return {
+      message: SUCCESS,
+      ...listData,
+    };
+  }
+
+  /**
    * @member update
    *
    * @param {number} productId
    * @param {UpdateProductDto} updateProductDto
-   *
    * @param {JwtRequest} req
+   *
    * @returns {Promise<BasicSuccessResponseDto>}
    * */
   @Put(':id')

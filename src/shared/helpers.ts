@@ -32,7 +32,7 @@ export const transformLimit = (limit): number => {
 };
 
 export const transformPage = (page): number => {
-  page = Number(page);
+  page = +page;
   if (isNaN(page) || page <= 0) {
     page = 1;
   }

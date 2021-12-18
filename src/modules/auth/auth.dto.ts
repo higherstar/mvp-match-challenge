@@ -45,7 +45,7 @@ export class RegisterDataDto {
   @IsEnum(Roles, { message: INVALID_ROLE })
   @IsNotEmpty()
   @ApiProperty({ type: 'enum', enum: Roles })
-  role: Roles
+  role: Roles;
 }
 
 /**
