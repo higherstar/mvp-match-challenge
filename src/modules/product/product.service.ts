@@ -1,6 +1,6 @@
 // Dependencies
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { DeleteResult, Like, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Like, Repository, UpdateResult, MoreThan } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 
 // Product entity
@@ -58,6 +58,8 @@ export class ProductService {
    *
    * @param {User} user
    * @param {number} productId
+   *
+   * @returns {Promise<boolean>}
    * */
   async checkRight(user: User, productId: number): Promise<boolean> {
     const product = await this.read(productId);
@@ -98,6 +100,13 @@ export class ProductService {
 
   /**
    * @member readAll
+   *
+   * @param {PaginationParamsDto} paginationParams
+   * @param {SortOrderDto} sortOrderDto
+   * @param {string} search
+   * @param {User} user
+   *
+   * @returns {Promise<ListDto<Product>>}
    * */
   async readAll(
     paginationParams: PaginationParamsDto,
@@ -105,11 +114,22 @@ export class ProductService {
     search: string = '',
     user: User,
   ): Promise<ListDto<Product>> {
-    const [products, totalCount] = await this.productRepository.findAndCount({
-      where: {
+    let where: {};
+
+    if (user.role === 'buyer') {
+      where = {
+        productName: Like(`%${search}%`),
+        amountAvailable: MoreThan(0),
+      };
+    } else {
+      where = {
         productName: Like(`%${search}%`),
         seller: user.id,
-      },
+      };
+    }
+
+    const [products, totalCount] = await this.productRepository.findAndCount({
+      where,
       order: {
         [sortOrderDto.sortBy]: sortOrderDto.order,
       },

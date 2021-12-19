@@ -88,7 +88,7 @@ export class ProductController {
 
     return {
       message: SUCCESS,
-    }
+    };
   }
 
   /**
