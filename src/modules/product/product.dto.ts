@@ -14,17 +14,17 @@ export class CreateProductDto {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ type: 'string' })
-  productName;
+  productName: string;
 
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty({ type: 'number' })
-  cost;
+  cost: number;
 
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty({ type: 'number' })
-  amountAvailable;
+  amountAvailable: number;
 }
 
 /**

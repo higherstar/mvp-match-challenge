@@ -1,5 +1,5 @@
 // Dependencies
-import { IsNotEmpty, IsNumber, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsEnum, IsArray } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 // Constants
@@ -15,22 +15,34 @@ export class DepositDto {
   @IsEnum(DepositAmount, { message: INVALID_DEPOSIT_VALUE })
   @IsNotEmpty()
   @ApiProperty({ type: 'number', enum: DepositAmount })
-  value;
+  value: number;
 }
 
 /**
- * Export buy dto
+ * Export purchase dto
  *
- * @class BuyDto
+ * @class ProductDto
  * */
-export class BuyDto {
+export class ProductDto {
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty({ type: 'number' })
-  productId;
+  id: number;
 
   @IsNumber()
   @IsNotEmpty()
   @ApiProperty({ type: 'number' })
-  productAmount;
+  quantity: number;
+}
+
+/**
+ * Export purchase dto
+ *
+ * @class PurchaseDto
+ * */
+export class PurchaseDto {
+  @IsArray()
+  @IsNotEmpty()
+  @ApiProperty({ type: 'array' })
+  products: ProductDto[];
 }

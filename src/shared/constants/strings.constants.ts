@@ -12,3 +12,4 @@ export const PRODUCT_NOT_FOUND = 'Product was not found!';
 export const USER_NOT_DEPOSIT = 'You do not have right to deposit!';
 export const USER_NOT_BUY = 'You do not have right to buy!';
 export const INVALID_DEPOSIT_VALUE = 'Invalid value! Try input 5, 10, 20, 50 or 100.';
+export const NOT_ENOUGH_DEPOSIT = 'Your deposit is not enough to purchase.';

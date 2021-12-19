@@ -15,8 +15,8 @@ import { Roles } from '../../shared/constants/global.constants';
 import { SUCCESS, USER_NOT_BUY, USER_NOT_DEPOSIT } from '../../shared/constants/strings.constants';
 
 // DTOs
-import { BuyDto, DepositDto } from './business.dto';
-import { BasicSuccessResponseDto } from '../../shared/DTOs/success-response.dto';
+import { ProductDto, DepositDto, PurchaseDto } from './business.dto';
+import { BasicSuccessResponseDto, SuccessResponseDto } from '../../shared/DTOs/success-response.dto';
 
 /**
  * Export business controller
@@ -65,6 +65,8 @@ export class BusinessController {
    * @member reset
    *
    * @param {JwtRequest} req
+   *
+   * @returns {Promise<BasicSuccessResponseDto>}
    * */
   @Post('reset')
   @ApiOperation({ description: 'Reset deposit back to 0' })
@@ -83,22 +85,29 @@ export class BusinessController {
   }
 
   /**
-   * @member buy
+   * @member purchase
    *
-   * @param {BuyDto[]} buyDtos
+   * @param {ProductDto[]} purchaseDto
    * @param {JwtRequest} req
+   *
+   *
    * */
-  @Post('buy')
+  @Post('purchase')
   @ApiOperation({ description: 'Buy product' })
   @ApiResponse({ status: 200, description: 'Success' })
   @ApiResponse({ status: 403, description: 'Forbidden - You do not have rights to deposit' })
-  async buy(@Body() buyDtos: BuyDto[], @Req() req: JwtRequest) {
+  async purchase(@Body() purchaseDto: PurchaseDto, @Req() req: JwtRequest): Promise<SuccessResponseDto<any>> {
     const isBuyer = req.user.role === Roles.BUYER;
 
     if (!isBuyer) {
       throw new ForbiddenException(USER_NOT_BUY);
     }
 
-    return await this.businessService.buy(buyDtos, req.user);
+    const data = await this.businessService.purchase(purchaseDto, req.user);
+
+    return {
+      message: SUCCESS,
+      data,
+    };
   }
 }

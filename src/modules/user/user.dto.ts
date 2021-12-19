@@ -18,17 +18,17 @@ export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
   @ApiProperty({ type: 'email' })
-  email;
+  email: string;
 
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ type: 'string' })
-  password;
+  password: string;
 
   @IsEnum(Roles, { message: INVALID_ROLE })
   @IsNotEmpty()
   @ApiProperty({ type: 'enum', enum: Roles })
-  role;
+  role: Roles;
 }
 
 /**
